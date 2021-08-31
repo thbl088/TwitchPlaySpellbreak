@@ -2,6 +2,7 @@ import socket
 import threading
 import time
 from ahk import AHK
+from ahk.window import Window
 
 # Video where the source came from https://www.youtube.com/watch?v=uE_3RRBz3CQ&t=5s
 
@@ -115,7 +116,11 @@ def gamecontrol():
     subPerms = ['movement', 'shot', 'sorcery', 'drop']
     vipPerms = ['hold', 'movement',  'shot', 'sorcery', 'drop', 'emote', 'mouse', 'other', 'abuse']  # everything
     modPerms = ['hold', 'movement',  'shot', 'sorcery', 'drop', 'emote', 'mouse', 'other', 'abuse']  # everything
-    streamerPerms = ['loot', 'rune', 'dodge', 'levitate', 'inventory', 'hold', 'movement',  'shot', 'sorcery', 'drop', 'emote', 'mouse', 'other', 'abuse']  # absolutely everything
+    streamerPerms = [
+                     'loot', 'rune', 'dodge', 'levitate', 'inventory', 'hold',
+                     'movement',  'shot', 'sorcery', 'drop', 'emote',
+                     'mouse', 'other', 'abuse'
+                     ]  # absolutely everything
     bluePerms = []
     redPerms = []
     nonePerms = []
@@ -276,6 +281,40 @@ def gamecontrol():
 
         # Move your mouse
         if perms['mouse']:
+            print(ahk.mouse_position)
+            def looseFocus():
+                win = Window(ahk, ahk_id='0x20050')
+                win.activate()
+            def recenterMouse():
+                #sb = ahk.active_window
+                sb = ahk.win_get(title='Spellbreak')
+                sb.disable()
+                looseFocus()
+                ahk.mouse_move(x=1920/2, y=1080/2, blocking=False)  # Blocks until mouse finishes moving (the default)
+                sb.enable()
+                sb.activate()
+
+
+            if "test0" == message.lower():
+                mousePos = ahk.mouse_position
+                print(mousePos)
+                recenterMouse()
+                print(mousePos)
+                message = ""
+
+            if "test1" == message.lower():
+                mousePos = ahk.mouse_position
+                recenterMouse()
+                print(mousePos)
+                ahk.mouse_move(x=mousePos[0] + 300, y=mousePos[1], blocking=True)
+                print(mousePos)
+                recenterMouse()
+                print(mousePos)
+                ahk.mouse_move(x=mousePos[0] + 300, y=mousePos[1], blocking=True)
+                recenterMouse()
+                print(mousePos)
+                message = ""
+
             if "pos" == message.lower():
                 mousePos = ahk.mouse_position
                 print(mousePos)
@@ -285,7 +324,15 @@ def gamecontrol():
                 mousePos = ahk.mouse_position
                 print(mousePos)
 
+                ahk.mouse_position[0] = 1920/2
                 ahk.mouse_move(x=mousePos[0] + 1750, y=mousePos[1], blocking=True)  # Blocks until mouse finishes moving (the default)
+                ahk.mouse_position[0] = 1920 / 2
+                ahk.mouse_move(x=mousePos[0] + 1750, y=mousePos[1],
+                               blocking=True)  # Blocks until mouse finishes moving (the default)
+                ahk.mouse_position[0] = 1920 / 2
+                ahk.mouse_move(x=mousePos[0] + 1750, y=mousePos[1],
+                               blocking=True)  # Blocks until mouse finishes moving (the default)
+
                 mousePos = ahk.mouse_position
                 print(mousePos)
                 message = ""
@@ -345,12 +392,6 @@ def gamecontrol():
                 print(mousePos)
                 message = ""
 
-            if 'test' == message.lower():
-                mousePos = ahk.mouse_position
-                ahk.mouse_move(x=mousePos[0] + 1920, y=mousePos[1], blocking=True)
-                ahk.mouse_move(x=1920 / 2, y=1080 / 2, blocking=True)
-                ahk.mouse_move(x=mousePos[0] + 1920, y=mousePos[1], blocking=True)
-                message = ""
         if perms['abuse']:
             if "double shot" == message.lower():
                 ahk.key_press('LButton')
@@ -469,7 +510,6 @@ def twitch():
         else:
             team = "None"
         return team
-
 
     def console(line):
         if "PRIVMSG" in line:
