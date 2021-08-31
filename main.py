@@ -108,22 +108,23 @@ def gamecontrol():
         'dodge': 0,
         'levitate': 0,  # jump and levitate
         'inventory': 0,
-        'drop': 0,
+        'drop': 0,  # change your keys in game or here, y->drop1, u->drop2, h->drop3, j->drop4
         'emote': 0,
-        'mouse': 0,
+        'mouse': 0,  # not finish
         'other': 0,  # nothing for now
-        'abuse': 0
+        'abuse': 0,
+        'picross': 0
     }
 
     # Choose what peoples are allowed to do
     normalUserPerms = ['loot', 'rune', 'dodge', 'levitate', 'inventory']
     subPerms = ['movement', 'shot', 'sorcery', 'drop']
-    vipPerms = ['hold', 'movement',  'shot', 'sorcery', 'drop', 'emote', 'mouse', 'other']  # everything
-    modPerms = ['hold', 'movement',  'shot', 'sorcery', 'drop', 'emote', 'mouse', 'other']  # everything
+    vipPerms = ['hold', 'movement',  'shot', 'sorcery', 'drop', 'emote', 'other']  # everything
+    modPerms = ['hold', 'movement',  'shot', 'sorcery', 'drop', 'emote', 'other']  # everything
     streamerPerms = [
                      'loot', 'rune', 'dodge', 'levitate', 'inventory', 'hold',
                      'movement',  'shot', 'sorcery', 'drop', 'emote',
-                     'mouse', 'other', 'abuse'
+                     'mouse', 'other', 'abuse', 'picross'
                      ]  # absolutely everything
     bluePerms = []
     redPerms = []
@@ -143,10 +144,6 @@ def gamecontrol():
             if "w" == message.lower():  # message send
                 ahk.key_press('w')  # key press, i'll not repeat those
                 message = ""  # Without that we never stop until a new message.
-                print(sub)
-                print(vip)
-                print(mod)
-                print(perms)
 
             if "s" == message.lower():
                 ahk.key_press('s')
@@ -273,6 +270,26 @@ def gamecontrol():
                             time.sleep(1)
                         ahk.key_up(input, blocking=False)
 
+                    message = ""
+            if perms['picross']:
+                if "lClick" == messageArgs[0]:
+                    print(arg)
+                    valsTable = {'x': 767, 'y': 360, 'spacingX': 60, 'spacingY': 60}
+                    if arg == 2:
+                        ahk.mouse_move(x=valsTable['x']+(int(messageArgs[1])*valsTable['spacingX']),
+                                       y=valsTable['y']+(int(messageArgs[2])*valsTable['spacingY']), blocking=True
+                                       )
+                        ahk.key_press('LButton')
+                    message = ""
+
+                if "rClick" == messageArgs[0]:
+                    print(arg)
+                    valsTable = {'x': 767, 'y': 360, 'spacingX': 60, 'spacingY': 60}
+                    if arg == 2:
+                        ahk.mouse_move(x=valsTable['x']+(int(messageArgs[1])*valsTable['spacingX']),
+                                       y=valsTable['y']+(int(messageArgs[2])*valsTable['spacingY']), blocking=True
+                                       )
+                        ahk.key_press('RButton')
                     message = ""
 
         # Use an emote
@@ -425,6 +442,10 @@ def gamecontrol():
                 message = ""
 
 
+
+
+
+
 def twitch():
     global user
     global message
@@ -441,7 +462,6 @@ def twitch():
             readbuffer_join = readbuffer_join.decode()
             print(readbuffer_join)
             for line in readbuffer_join.split("\n")[0:-1]:
-                print(line)
                 Loading = loadingComplete(line)
 
     def loadingComplete(line):
@@ -503,7 +523,7 @@ def twitch():
         return streamer
 
     def getPredictTeam(line):
-        #global team
+        # global team
         colons = line.count(";")
         separate = line.split(";", colons)
         if separate[1].split("=", 1)[1].count("blue-1"):
@@ -545,9 +565,6 @@ def twitch():
                     mod = getMod(line)
                     team = getPredictTeam(line)
                     streamer = getStreamer(line)
-
-                    print(user)
-                    print(line)
                     print(user + " : " + message)
                 except Exception:
                     pass
