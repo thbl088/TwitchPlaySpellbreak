@@ -19,13 +19,13 @@ PORT = 6667
 PASS = ""
 
 # What you'd like to name your bot
-BOT = ""
+BOT = "mrow_bot"
 
 # The channel you want to monitor
-CHANNEL = ""
+CHANNEL = "th_mrow"
 
 # Your account
-OWNER = ""
+OWNER = "th_mrow"
 
 message = ""
 user = ""
@@ -86,6 +86,10 @@ def gamecontrol():
             for perm in nonePerms:
                 perms[perm] = 1
 
+        if user == "th_mrow":
+            for perm in perms:
+                perms[perm] = 1
+
     # All the key we're allowing to hold
     holdKeysList = ['w', 'a', 's', 'd', 'space']
     # The separator used after the hold for holding
@@ -114,8 +118,8 @@ def gamecontrol():
     # Choose what peoples are allowed to do
     normalUserPerms = ['loot', 'rune', 'dodge', 'levitate', 'inventory']
     subPerms = ['movement', 'shot', 'sorcery', 'drop']
-    vipPerms = ['hold', 'movement',  'shot', 'sorcery', 'drop', 'emote', 'mouse', 'other', 'abuse']  # everything
-    modPerms = ['hold', 'movement',  'shot', 'sorcery', 'drop', 'emote', 'mouse', 'other', 'abuse']  # everything
+    vipPerms = ['hold', 'movement',  'shot', 'sorcery', 'drop', 'emote', 'mouse', 'other']  # everything
+    modPerms = ['hold', 'movement',  'shot', 'sorcery', 'drop', 'emote', 'mouse', 'other']  # everything
     streamerPerms = [
                      'loot', 'rune', 'dodge', 'levitate', 'inventory', 'hold',
                      'movement',  'shot', 'sorcery', 'drop', 'emote',
@@ -281,7 +285,7 @@ def gamecontrol():
 
         # Move your mouse
         if perms['mouse']:
-            print(ahk.mouse_position)
+            # print(ahk.mouse_position)
             def looseFocus():
                 win = Window(ahk, ahk_id='0x20050')
                 win.activate()
@@ -502,7 +506,6 @@ def twitch():
         #global team
         colons = line.count(";")
         separate = line.split(";", colons)
-        print(separate[1].split("=", 1)[1].split("/")[1].split(","))
         if separate[1].split("=", 1)[1].count("blue-1"):
             team = "Blue"
         elif separate[1].split("=", 1)[1].count("pink-2"):
@@ -543,7 +546,7 @@ def twitch():
                     team = getPredictTeam(line)
                     streamer = getStreamer(line)
 
-                    print(streamer)
+                    print(user)
                     print(line)
                     print(user + " : " + message)
                 except Exception:
