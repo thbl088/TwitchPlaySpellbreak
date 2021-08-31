@@ -97,7 +97,6 @@ def gamecontrol():
     # The maximum time we're allowing someone to hold a key, in second (float). To hold you need to do hold-key-time
     maxTimeHold = 1.5
 
-
     perms = {
         'hold': 0,  # hold wasd space (holdKeysList
         'movement': 0,  # press wasd
@@ -119,13 +118,13 @@ def gamecontrol():
     # Choose what peoples are allowed to do
     normalUserPerms = ['loot', 'rune', 'dodge', 'levitate', 'inventory']
     subPerms = ['movement', 'shot', 'sorcery', 'drop']
-    vipPerms = ['hold', 'movement',  'shot', 'sorcery', 'drop', 'emote', 'other']  # everything
-    modPerms = ['hold', 'movement',  'shot', 'sorcery', 'drop', 'emote', 'other']  # everything
+    vipPerms = ['hold', 'movement', 'shot', 'sorcery', 'drop', 'emote', 'other']  # everything
+    modPerms = ['hold', 'movement', 'shot', 'sorcery', 'drop', 'emote', 'other']  # everything
     streamerPerms = [
-                     'loot', 'rune', 'dodge', 'levitate', 'inventory', 'hold',
-                     'movement',  'shot', 'sorcery', 'drop', 'emote',
-                     'mouse', 'other', 'abuse', 'picross'
-                     ]  # absolutely everything
+        'loot', 'rune', 'dodge', 'levitate', 'inventory', 'hold',
+        'movement', 'shot', 'sorcery', 'drop', 'emote',
+        'mouse', 'other', 'abuse', 'picross'
+    ]  # absolutely everything
     bluePerms = []
     redPerms = []
     nonePerms = []
@@ -271,26 +270,43 @@ def gamecontrol():
                         ahk.key_up(input, blocking=False)
 
                     message = ""
+
+        # Picross
+        if message != "":
+            arg = message.count(separator)
+            if 0 <= arg < 5:
+                messageArgs = message.split(separator, arg)
+            else:
+                messageArgs = message
             if perms['picross']:
-                if "lClick" == messageArgs[0]:
-                    print(arg)
-                    valsTable = {'x': 767, 'y': 360, 'spacingX': 60, 'spacingY': 60}
-                    if arg == 2:
-                        ahk.mouse_move(x=valsTable['x']+(int(messageArgs[1])*valsTable['spacingX']),
-                                       y=valsTable['y']+(int(messageArgs[2])*valsTable['spacingY']), blocking=True
+                valsTable = {'x': 767, 'y': 360, 'spacingX': 61, 'spacingY': 61}
+                if arg == 2:
+                    if 'lClick' == messageArgs[0]:
+                        ahk.mouse_move(x=valsTable['x'] + (int(messageArgs[1]) * valsTable['spacingX']),
+                                       y=valsTable['y'] + (int(messageArgs[2]) * valsTable['spacingY']), blocking=True
                                        )
                         ahk.key_press('LButton')
-                    message = ""
+                        message = ""
 
-                if "rClick" == messageArgs[0]:
-                    print(arg)
-                    valsTable = {'x': 767, 'y': 360, 'spacingX': 60, 'spacingY': 60}
-                    if arg == 2:
-                        ahk.mouse_move(x=valsTable['x']+(int(messageArgs[1])*valsTable['spacingX']),
-                                       y=valsTable['y']+(int(messageArgs[2])*valsTable['spacingY']), blocking=True
+                    if 'rClick' == messageArgs[0]:
+                        ahk.mouse_move(x=valsTable['x'] + (int(messageArgs[1]) * valsTable['spacingX']),
+                                       y=valsTable['y'] + (int(messageArgs[2]) * valsTable['spacingY']), blocking=True
                                        )
                         ahk.key_press('RButton')
-                    message = ""
+                        message = ""
+                if arg == 4:
+                    if 'drag' == messageArgs[0]:
+                        fromPos = {'x': valsTable['x'] + (int(messageArgs[1]) * valsTable['spacingX']),
+                                   'y': valsTable['y'] + (int(messageArgs[2]) * valsTable['spacingY'])
+                                   }
+                        ahk.mouse_move(x=fromPos['x'], y=fromPos['y'], blocking=True)
+
+                        ahk.mouse_drag(x=valsTable['x'] + (int(messageArgs[3]) * valsTable['spacingX']),
+                                       y=valsTable['y'] + (int(messageArgs[4]) * valsTable['spacingY']),
+                                       speed=10,
+                                       blocking=True
+                                       )
+                        message = ""
 
         # Use an emote
         if perms['emote']:
@@ -306,15 +322,16 @@ def gamecontrol():
             def looseFocus():
                 win = Window(ahk, ahk_id='0x20050')
                 win.activate()
+
             def recenterMouse():
-                #sb = ahk.active_window
+                # sb = ahk.active_window
                 sb = ahk.win_get(title='Spellbreak')
                 sb.disable()
                 looseFocus()
-                ahk.mouse_move(x=1920/2, y=1080/2, blocking=False)  # Blocks until mouse finishes moving (the default)
+                ahk.mouse_move(x=1920 / 2, y=1080 / 2,
+                               blocking=False)  # Blocks until mouse finishes moving (the default)
                 sb.enable()
                 sb.activate()
-
 
             if "test0" == message.lower():
                 mousePos = ahk.mouse_position
@@ -345,8 +362,9 @@ def gamecontrol():
                 mousePos = ahk.mouse_position
                 print(mousePos)
 
-                ahk.mouse_position[0] = 1920/2
-                ahk.mouse_move(x=mousePos[0] + 1750, y=mousePos[1], blocking=True)  # Blocks until mouse finishes moving (the default)
+                ahk.mouse_position[0] = 1920 / 2
+                ahk.mouse_move(x=mousePos[0] + 1750, y=mousePos[1],
+                               blocking=True)  # Blocks until mouse finishes moving (the default)
                 ahk.mouse_position[0] = 1920 / 2
                 ahk.mouse_move(x=mousePos[0] + 1750, y=mousePos[1],
                                blocking=True)  # Blocks until mouse finishes moving (the default)
@@ -362,7 +380,8 @@ def gamecontrol():
                 mousePos = ahk.mouse_position
                 print(mousePos)
 
-                ahk.mouse_move(x=mousePos[0] - 1750, y=mousePos[1], blocking=True)  # Blocks until mouse finishes moving (the default)
+                ahk.mouse_move(x=mousePos[0] - 1750, y=mousePos[1],
+                               blocking=True)  # Blocks until mouse finishes moving (the default)
                 mousePos = ahk.mouse_position
                 print(mousePos)
                 message = ""
@@ -371,7 +390,8 @@ def gamecontrol():
                 mousePos = ahk.mouse_position
                 print(mousePos)
 
-                ahk.mouse_move(x=mousePos[0], y=mousePos[1] - 1080, blocking=True)  # Blocks until mouse finishes moving (the default)
+                ahk.mouse_move(x=mousePos[0], y=mousePos[1] - 1080,
+                               blocking=True)  # Blocks until mouse finishes moving (the default)
                 mousePos = ahk.mouse_position
                 print(mousePos)
                 message = ""
@@ -380,7 +400,8 @@ def gamecontrol():
                 mousePos = ahk.mouse_position
                 print(mousePos)
 
-                ahk.mouse_move(x=mousePos[0], y=mousePos[1] + 1080, blocking=True)  # Blocks until mouse finishes moving (the default)
+                ahk.mouse_move(x=mousePos[0], y=mousePos[1] + 1080,
+                               blocking=True)  # Blocks until mouse finishes moving (the default)
                 mousePos = ahk.mouse_position
                 print(mousePos)
                 message = ""
@@ -389,7 +410,8 @@ def gamecontrol():
                 mousePos = ahk.mouse_position
                 print(mousePos)
 
-                ahk.mouse_move(x=mousePos[0] + 1750, y=mousePos[1], blocking=True)  # Blocks until mouse finishes moving (the default)
+                ahk.mouse_move(x=mousePos[0] + 1750, y=mousePos[1],
+                               blocking=True)  # Blocks until mouse finishes moving (the default)
                 ahk.mouse_move(x=mousePos[0] + 1750, y=mousePos[1], blocking=True)
                 mousePos = ahk.mouse_position
                 print(mousePos)
@@ -398,7 +420,8 @@ def gamecontrol():
             if "360" == message.lower():
                 mousePos = ahk.mouse_position
 
-                ahk.mouse_move(x=mousePos[0] + 1920, y=mousePos[1], blocking=True)  # Blocks until mouse finishes moving (the default)
+                ahk.mouse_move(x=mousePos[0] + 1920, y=mousePos[1],
+                               blocking=True)  # Blocks until mouse finishes moving (the default)
                 ahk.mouse_move(x=mousePos[0] + 1920, y=mousePos[1], blocking=True)
                 mousePos = ahk.mouse_position
                 print(mousePos)
@@ -408,7 +431,8 @@ def gamecontrol():
                 mousePos = ahk.mouse_position
                 print(mousePos)
 
-                ahk.mouse_move(x=1920/2, y=1080/2, blocking=True)  # Blocks until mouse finishes moving (the default)
+                ahk.mouse_move(x=1920 / 2, y=1080 / 2,
+                               blocking=True)  # Blocks until mouse finishes moving (the default)
                 mousePos = ahk.mouse_position
                 print(mousePos)
                 message = ""
@@ -440,10 +464,6 @@ def gamecontrol():
                 ahk.key_up('RButton')
                 ahk.key_up('d')
                 message = ""
-
-
-
-
 
 
 def twitch():
