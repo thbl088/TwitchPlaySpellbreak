@@ -19,13 +19,13 @@ PORT = 6667
 PASS = ""
 
 # What you'd like to name your bot
-BOT = "mrow_bot"
+BOT = ""
 
 # The channel you want to monitor
-CHANNEL = "th_mrow"
+CHANNEL = ""
 
 # Your account
-OWNER = "th_mrow"
+OWNER = ""
 
 message = ""
 user = ""
